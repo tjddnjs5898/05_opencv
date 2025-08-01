@@ -120,6 +120,54 @@ def live_aruco_detection(calibration_data):
                                 (center_x, center_y + 20),
                                 cv2.FONT_HERSHEY_SIMPLEX,
                                 0.5, (255, 0, 255), 2)
+
+                    #----------------------------------------------------------- 조건문
+                    # 마커와 카메라 간의 거리가 30cm 이하인 경우 "STOP!" 메시지 표시
+                    if pos_z < 0.30:  # 30cm 이하일 때
+                        # 텍스트 배경 그리기 (배경 색상은 반투명 빨간색)
+                        text = "STOP!"
+                        text_size, _ = cv2.getTextSize(
+                            text, cv2.FONT_HERSHEY_SIMPLEX, 1, 2)
+                        text_width, text_height = text_size
+
+                        # 배경 사각형 그리기
+                        background_x1 = center_x - text_width // 2 - 10
+                        background_y1 = center_y + 40 - text_height // 2 - 10
+                        background_x2 = center_x + text_width // 2 + 10
+                        background_y2 = center_y + 40 + text_height // 2 + 10
+                        cv2.rectangle(frame_undistorted, (background_x1, background_y1),
+                                      (background_x2, background_y2), (0, 0, 255), -1)  # 빨간색 배경
+
+                        # 텍스트 그리기
+                        cv2.putText(frame_undistorted,
+                                    text,
+                                    (center_x - text_width // 2,
+                                     center_y + 40 + text_height // 2),
+                                    cv2.FONT_HERSHEY_SIMPLEX,
+                                    1, (255, 255, 255), 2, cv2.LINE_AA)  # 흰색 텍스트
+                    
+                    else:
+                        text = "GO!"
+                        text_size, _ = cv2.getTextSize(
+                            text, cv2.FONT_HERSHEY_SIMPLEX, 1, 2)
+                        text_width, text_height = text_size
+
+                        # 배경 사각형 그리기
+                        background_x1 = center_x - text_width // 2 - 10
+                        background_y1 = center_y + 40 - text_height // 2 - 10
+                        background_x2 = center_x + text_width // 2 + 10
+                        background_y2 = center_y + 40 + text_height // 2 + 10
+                        cv2.rectangle(frame_undistorted, (background_x1, background_y1),
+                                      (background_x2, background_y2), (0, 255, 0), -1)  # 초록색 배경
+
+                        # 텍스트 그리기
+                        cv2.putText(frame_undistorted,
+                                    text,
+                                    (center_x - text_width // 2,
+                                     center_y + 40 + text_height // 2),
+                                    cv2.FONT_HERSHEY_SIMPLEX,
+                                    1, (255, 255, 255), 2, cv2.LINE_AA)  # 흰색 텍스트
+                    #-----------------------------------------------------------
                     
                     # 코너 포인트 표시
                     for point in corner:
