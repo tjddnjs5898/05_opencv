@@ -1,40 +1,35 @@
-import cv2 
-import matplotlib.pyplot as plt
-import pyzbar.pyzbar as pyzbar
-import webbrowser  # 웹사이트 열기 위한 모듈
+import cv2
+import datetime
 
-cap = cv2.VideoCapture(0)
+# 비디오 캡처 객체 생성
+cap = cv2.VideoCapture(0) 
 
-while cap.isOpened():
-    ret, img = cap.read()
+while True:
+
+    # 카메라로부터 프레임을 읽음
+    ret, frame = cap.read()
     if not ret:
-        continue
-
-    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    decoded = pyzbar.decode(gray)
-
-    for d in decoded:
-        x, y, w, h = d.rect
-        barcode_data = d.data.decode('utf-8')
-        barcode_type = d.type
-
-        text = '%s (%s)' % (barcode_data, barcode_type)
-        cv2.rectangle(img, (x, y), (x + w, y + h), (0, 255, 0 ), 2)
-        cv2.putText(img, text, (x, y), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 1, cv2.LINE_AA)
-
-        # 'qt'가 들어 있으면 웹브라우저 열기 (한 번만)
-        if 'http' in barcode_data.lower():  # 대소문자 구분 없이
-            print(f"Opening URL: {barcode_data}")
-            webbrowser.open(barcode_data)
-            cap.release()
-            cv2.destroyAllWindows()
-            exit()
-
-    cv2.imshow('camera', img)
-
-    key = cv2.waitKey(1)
-    if key == ord('q'):
+        print("프레임 X")  # 프레임 읽기 실패 시 메시지 출력
         break
 
-cap.release() 
+    # 읽은 프레임을 화면에 표시
+    cv2.imshow("Video", frame)
+
+    # 키 입력을 기다림 (1ms 대기 후 다음 프레임으로 이동)
+    key = cv2.waitKey(1) & 0xFF
+
+    # 'a' 키가 눌리면 현재 프레임을 저장
+    if key == ord('a'):
+        # 파일 이름을 현재 날짜 및 시간으로 설정
+        filename = datetime.datetime.now().strftime("../img/capture_%Y%m%d_%H%M%S.png")
+        # 프레임을 이미지 파일로 저장
+        cv2.imwrite(filename, frame)
+        print(f"{filename}")  # 저장된 파일 이름 출력
+
+    # 'q' 키가 눌리면 루프를 종료
+    elif key == ord('q'):
+        break
+
+# 자원 해제 (카메라 및 모든 OpenCV 창 닫기)
+cap.release()
 cv2.destroyAllWindows()
