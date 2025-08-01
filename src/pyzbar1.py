@@ -33,7 +33,7 @@ while (cap.isOpened()):
         #cv2.rectangle(img, (d.rect[0], d.rect[1]), (d.rect[0] + d.rect[2], d.rect[1] + d.rect[3]), (0, 255, 0 ), 20)
         cv2.rectangle(img, (x, y), (x + w, y + h), (0, 255, 0 ), 2)
         #cv2.putText(img, text, (d.rect[0], d.rect[1] - 50), cv2.FONT_HERSHEY_SIMPLEX, 3, (0, 255, 0), 2, cv2.LINE_AA )
-        cv2.putText(img, text, (x, y), cv2.FONT_HERSHEY_SIMPLEX, 3, (0, 255, 0), 2, cv2.LINE_AA )
+        cv2.putText(img, text, (x, y), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 1, cv2.LINE_AA )
     
     cv2.imshow('camera', img)
 
